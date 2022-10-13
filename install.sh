@@ -9,11 +9,11 @@
 # @@Copyright        :  Copyright: (c) 2022 Jason Hempstead, Casjays Developments
 # @@Created          :  Thursday, Oct 13, 2022 16:43 EDT
 # @@File             :  install.sh
-# @@Description      :  
+# @@Description      :
 # @@Changelog        :  New script
 # @@TODO             :  Better documentation
-# @@Other            :  
-# @@Resource         :  
+# @@Other            :
+# @@Resource         :
 # @@Terminal App     :  no
 # @@sudo/root        :  no
 # @@Template         :  installers/dockermgr
@@ -168,7 +168,7 @@ CONTAINER_HTTP_PROTO="http"
 # Only ONE HTTP or HTTPS if web server or SERVICE port for mysql pgsql ftp etc.
 CONTAINER_HTTP_PORT=""
 CONTAINER_HTTPS_PORT=""
-CONTAINER_SERVICE_PORT=""
+CONTAINER_SERVICE_PORT="2375"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Add Add sevicee port [port] or [port:port] - LISTEN will be added if defined [DEFINE_LISTEN]
 # DO NOT add SERVER_WEB_PORT here as it will be added
