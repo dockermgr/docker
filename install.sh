@@ -168,7 +168,7 @@ CONTAINER_HTTP_PROTO="http"
 # Only ONE HTTP or HTTPS if web server or SERVICE port for mysql pgsql ftp etc.
 CONTAINER_HTTP_PORT=""
 CONTAINER_HTTPS_PORT=""
-CONTAINER_SERVICE_PORT="2375"
+CONTAINER_SERVICE_PORT="19375:2375"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Add Add sevicee port [port] or [port:port] - LISTEN will be added if defined [DEFINE_LISTEN]
 # DO NOT add SERVER_WEB_PORT here as it will be added
