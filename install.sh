@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202210131800-git
+##@Version           :  202210141730-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.com
 # @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2022 Jason Hempstead, Casjays Developments
-# @@Created          :  Thursday, Oct 13, 2022 18:00 EDT
+# @@Created          :  Friday, Oct 14, 2022 17:30 EDT
 # @@File             :  install.sh
 # @@Description      :
 # @@Changelog        :  New script
@@ -19,7 +19,7 @@
 # @@Template         :  installers/dockermgr
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="docker"
-VERSION="202210131800-git"
+VERSION="202210141730-git"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
 RUN_USER="${SUDO_USER:-$USER}"
@@ -101,7 +101,6 @@ LOCAL_CONFIG_DIR="${LOCAL_CONFIG_DIR:-$SERVER_CONFIG_DIR}"
 TZ="America/New_York"
 SERVER_HOST_NAME=""
 SERVER_DOMAIN_NAME=""
-CONTAINER_SHM_SIZE="128M"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # URL to container image [docker pull URL]
 HUB_IMAGE_URL="casjaysdevdocker/docker"
@@ -147,7 +146,7 @@ DOCKER_SOCKET_MOUNT="/var/run/docker.sock"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional mounts [ /dir:/dir ]
 ADDITIONAL_MOUNTS="$LOCAL_CONFIG_DIR:/config:z $LOCAL_DATA_DIR:/data:z "
-ADDITIONAL_MOUNTS+="$HOME/.docker/config.json:/root/.docker/config.json $HOME/Projects/github/casjaysdevdocker:/root/build:ro "
+ADDITIONAL_MOUNTS+="$HOME/.docker/config.json:/root/.docker/config.json $HOME/Projects/github/casjaysdevdocker:/root/build:ro"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional variables [ myvar=var ]
 ADDITION_ENV=""
@@ -158,7 +157,7 @@ ADDITION_DEVICES=""
 ADDITION_DEVICES+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional docker arguments - see docker run --help
-CUSTOM_ARGUMENTS="--shm-size=$CONTAINER_SHM_SIZE "
+CUSTOM_ARGUMENTS=""
 CUSTOM_ARGUMENTS+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Set this to the protocol the the container will use [http]
@@ -172,8 +171,8 @@ CONTAINER_SERVICE_PORT="19375:2375"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Add Add sevicee port [port] or [port:port] - LISTEN will be added if defined [DEFINE_LISTEN]
 # DO NOT add SERVER_WEB_PORT here as it will be added
-SERVER_PORT_ADD_CUSTOM=""
-SERVER_PORT_ADD_CUSTOM+=""
+CONTAINER_ADD_CUSTOM_PORT=""
+CONTAINER_ADD_CUSTOM_PORT+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Show user info message
 SERVER_MESSAGE_USER=""
@@ -188,7 +187,7 @@ NGINX_HTTP="80"
 NGINX_HTTPS="443"
 NGINX_PROXY=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# End of configuration
+# End of configuration options
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # import global variables
 if [ -f "$APPDIR/env.sh" ] && [ ! -f "$APPDIR/.env" ]; then
@@ -239,23 +238,24 @@ SERVER_DOMAIN_NAME="${SERVER_DOMAIN_NAME:-"$(hostname -d 2>/dev/null | grep '^' 
 SERVER_HOST_NAME="${SERVER_HOST_NAME:-$APPNAME.$SERVER_DOMAIN_NAME}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Configure variables
+[ -n "$SERVER_TIMEZONE" ] || SERVER_TIMEZONE="America/New_York"
 [ "$CONTAINER_HTTPS_PORT" = "https" ] && CONTAINER_HTTP_PROTO="https"
-[ -n "$SERVER_DISPLAY" ] && ADDITIONAL_MOUNTS+="${X11_SOCKET:-/tmp/.X11-unix}:/tmp/.X11-unix "
 [ "$SERVER_LISTEN_LOCAL" = "true" ] && DEFINE_LISTEN="${LOCAL_IP:-127.0.0.1}"
+[ -n "$SERVER_DISPLAY" ] && ADDITIONAL_MOUNTS+="${X11_SOCKET:-/tmp/.X11-unix}:/tmp/.X11-unix "
 [ "$DOCKER_SOCKET_ENABLED" = "true" ] && ADDITIONAL_MOUNTS+="$DOCKER_SOCKET_MOUNT:/var/run/docker.sock "
 [ "$NGINX_SSL" = "true" ] && [ -n "$NGINX_HTTPS" ] && NGINX_PORT="${NGINX_HTTPS:-443}" || NGINX_PORT="${NGINX_HTTP:-80}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # rewrite variables
 [ -n "$HUB_IMAGE_TAG" ] || HUB_IMAGE_TAG="latest"
 [ -n "$SERVER_WEB_PORT" ] && SERVER_PORT="${SERVER_WEB_PORT//:*/}"
-[ -n "$DEFINE_LISTEN" ] && DEFINE_LISTEN="${DEFINE_LISTEN//:/}:" || DEFINE_LISTEN=""
+[ -n "$DEFINE_LISTEN" ] && DEFINE_LISTEN="${DEFINE_LISTEN//:*/}:" || DEFINE_LISTEN=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # SSL setup
 if [ "$SSL_ENABLED" = "true" ]; then
   if [ "$CONTAINER_HTTP_PROTO" = "http" ]; then
-    NGINX_PROXY="https://$SERVER_LISTEN_ADDR:$SERVER_PORT"
     NGINX_LISTEN_OPTS="ssl http2"
-    CONTAINER_HTTP_PROTO="${CONTAINER_HTTP_PROTO:-https}"
+    NGINX_PROXY="https://$SERVER_LISTEN_ADDR:$SERVER_PORT"
+    CONTAINER_HTTP_PROTO="https"
   fi
   if [ -f "$SERVER_SSL_CRT" ] && [ -f "$SERVER_SSL_KEY" ]; then
     [ -f "$CONTAINER_SSL_CA" ] && ADDITIONAL_MOUNTS+="$SERVER_SSL_CA:$CONTAINER_SSL_CA "
@@ -266,7 +266,7 @@ else
   CONTAINER_HTTP_PROTO="${CONTAINER_HTTP_PROTO:-http}"
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SERVER_SERVICE_ADDR="$SERVER_LISTEN_ADDR:$CONTAINER_SERVICE_PORT"
+SERVER_SERVICE_ADDR="$SERVER_LISTEN_ADDR:${CONTAINER_SERVICE_PORT//:*/}"
 NGINX_PROXY="${NGINX_PROXY:-$CONTAINER_HTTP_PROTO://$SERVER_LISTEN_ADDR:$SERVER_PORT}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_ENV=""
@@ -296,7 +296,7 @@ for mnt in $ADDITIONAL_MOUNTS; do
 done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_PORT=""
-for port in $CONTAINER_HTTP_PORT $CONTAINER_SERVICE_PORT $CONTAINER_HTTPS_PORT $SERVER_PORT_ADD_CUSTOM; do
+for port in $CONTAINER_HTTP_PORT $CONTAINER_SERVICE_PORT $CONTAINER_HTTPS_PORT $CONTAINER_ADD_CUSTOM_PORT; do
   [ "$port" = " " ] && port=""
   if [ -n "$port" ]; then
     echo "$port" | grep -q ':' || port="$port:$port"
@@ -306,6 +306,7 @@ done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Clone/update the repo
 if __am_i_online; then
+  urlverify "$REPO" || printf_exit "$REPO was not found"
   if [ -d "$INSTDIR/.git" ]; then
     message="Updating $APPNAME configurations"
     execute "git_update $INSTDIR" "$message"
@@ -343,10 +344,9 @@ else
   printf_cyan "Updating the image from $HUB_IMAGE_URL with tag $HUB_IMAGE_TAG"
   __sudo docker pull "$HUB_IMAGE_URL" &>/dev/null
   printf_cyan "Creating container $APPNAME"
-  __sudo docker run -d \
-    --privileged \
-    --restart=always \
+  __sudo docker run -d --tty --privileged --restart=always \
     --name="$APPNAME" \
+    --shm-size=${CONTAINER_SHM_SIZE:-64M} \
     --hostname "$SERVER_HOST_NAME" $CUSTOM_ARGUMENTS \
     -e TZ="$SERVER_TIMEZONE" \
     -e TIMEZONE="$SERVER_TIMEZONE" $SET_ENV $SET_DEV $SET_MNT $SET_PORT \
