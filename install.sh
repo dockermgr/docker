@@ -147,7 +147,7 @@ DOCKER_SOCKET_MOUNT="/var/run/docker.sock"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional mounts [ /dir:/dir ]
 ADDITIONAL_MOUNTS="$LOCAL_CONFIG_DIR:/config:z $LOCAL_DATA_DIR:/data:z "
-ADDITIONAL_MOUNTS+="$HOME/Projects/github/casjaysdevdocker:/root/build:ro"
+ADDITIONAL_MOUNTS+="$HOME/Projects/github/casjaysdevdocker:/root/build:ro "
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional variables [ myvar=var ]
 ADDITION_ENV=""
