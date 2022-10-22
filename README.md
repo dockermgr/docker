@@ -44,7 +44,7 @@ casjaysdevdocker/docker:latest
 ## Build image
   
 You can leave registry empty if you are using docker hub.  
-IF you want to build multiple images then set our folder names as your repo name  
+IF you want to build multiple images then set your folder names as your repo name.  
 and set the variable ORG to your username or org name.  
 The TAG_NAME variable is the name of the image  
   
