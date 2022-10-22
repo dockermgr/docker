@@ -46,6 +46,7 @@ casjaysdevdocker/docker:latest
 You can leave registry empty if you are using docker hub.  
 IF you want to build multiple images then set our folder names as your repo name  
 and set the variable ORG to your username or org name.  
+The TAG_NAME variable is the name of the image  
   
 ```shell
 docker pull casjaysdevdocker/docker:latest && \
@@ -53,9 +54,9 @@ docker run -ti --rm \
 --privileged \
 --name casjaysdevdocker-buildx \
 --hostname casjaysdev-docker \
--e ORG=""
+-e ORG="" \
 -e REGISTRY="" \
--e TAG_NAME="myorg/myrepo" \
+-e TAG_NAME="" \
 -e TZ=${TIMEZONE:-America/New_York \
 -v "$HOME/.docker/config.json":"/root/docker/.config.json" \
 -v "$PWD":"/root/build" \
