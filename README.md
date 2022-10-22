@@ -57,7 +57,7 @@ docker run -ti --rm \
 -e ORG="" \
 -e REGISTRY="" \
 -e TAG_NAME="" \
--e TZ=${TIMEZONE:-America/New_York \
+-e TZ=${TIMEZONE:-America/New_York} \
 -v "$HOME/.docker/config.json":"/root/docker/.config.json" \
 -v "$PWD":"/root/build" \
 casjaysdevdocker/docker:latest buildx 
