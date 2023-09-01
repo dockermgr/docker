@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202309011130-git
+##@Version           :  202309011635-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.pro
 # @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2023 Jason Hempstead, Casjays Developments
-# @@Created          :  Friday, Sep 01, 2023 11:30 EDT
+# @@Created          :  Friday, Sep 01, 2023 16:35 EDT
 # @@File             :  install.sh
 # @@Description      :  Container installer script for docker
 # @@Changelog        :  New script
@@ -27,7 +27,7 @@
 # shellcheck disable=SC2317
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="docker"
-VERSION="202309011130-git"
+VERSION="202309011635-git"
 REPO_BRANCH="${GIT_REPO_BRANCH:-main}"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
@@ -306,10 +306,11 @@ HOST_X11_XAUTH=""
 CONTAINER_X11_SOCKET="/tmp/.X11-unix"
 CONTAINER_X11_XAUTH="/home/x11user/.Xauthority"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# /proc /sys /dev mounts
+# /dev /sys /proc /lib/modules mounts
 HOST_DEV_MOUNT_ENABLED="no"
 HOST_SYS_MOUNT_ENABLED="no"
 HOST_PROC_MOUNT_ENABLED="no"
+HOST_MODULES_MOUNT_ENABLED="yes"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Set container hostname and domain - Default: [docker.$SET_HOST_FULL_NAME] [$SET_HOST_FULL_DOMAIN]
 CONTAINER_HOSTNAME=""
@@ -1122,7 +1123,7 @@ fi
 if [ -e "$CGROUPS_MOUNTS" ] || [ -e "/sys/fs/cgroup" ]; then
   if [ "$CGROUPS_ENABLED" = "yes" ]; then
     if [ -z "$CGROUPS_MOUNTS" ]; then
-      DOCKER_SET_OPTIONS+=("--volume /sys/fs/cgroup:/sys/fs/cgroup:ro")
+      DOCKER_SET_OPTIONS+=("--volume /sys/fs/cgroup:/sys/fs/cgroup:rw")
     else
       DOCKER_SET_OPTIONS+=("--volume $CGROUPS_MOUNTS")
     fi
@@ -1169,9 +1170,9 @@ if [ -e "$HOST_SOUND_DEVICE_FILE" ] || [ -e "/dev/snd" ]; then
   fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# /proc /sys /dev mounts
+# /lib/modules /proc /sys /dev mounts
 if [ "$HOST_DEV_MOUNT_ENABLED" = "yes" ]; then
-  DOCKER_SET_OPTIONS+=("--volume /dev:dev:z")
+  DOCKER_SET_OPTIONS+=("--volume /dev:/dev:z")
 fi
 if [ "$HOST_PROC_MOUNT_ENABLED" = "yes" ]; then
   DOCKER_SET_OPTIONS+=("--volume /proc:/proc:z")
@@ -1179,6 +1180,10 @@ fi
 if [ "$HOST_SYS_MOUNT_ENABLED" = "yes" ]; then
   DOCKER_SET_OPTIONS+=("--volume /sys:/sys:z")
 fi
+if [ "$HOST_MODULES_MOUNT_ENABLED" = "yes" ]; then
+  DOCKER_SET_OPTIONS+=("--volume /lib/modules:/lib/modules:z")
+fi
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # set password length
 if [ -n "$CONTAINER_USER_ADMIN_PASS_HASH" ]; then
