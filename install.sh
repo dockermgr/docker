@@ -273,7 +273,7 @@ CONTAINER_ENV_FILE_ENABLED="no"
 CONTAINER_ENV_FILE_MOUNT=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Enable cgroups - [yes/no] [/sys/fs/cgroup]
-CGROUPS_ENABLED="no"
+CGROUPS_ENABLED="yes"
 CGROUPS_MOUNTS=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Set location to resolv.conf - [yes/no] [/etc/resolv.conf]
@@ -289,7 +289,7 @@ DOCKER_SOCKET_ENABLED="no"
 DOCKER_SOCKET_MOUNT=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Mount docker config - [yes/no] [~/.docker/config.json] [/root/.docker/config.json]
-DOCKER_CONFIG_ENABLED="no"
+DOCKER_CONFIG_ENABLED="yes"
 HOST_DOCKER_CONFIG=""
 CONTAINER_DOCKER_CONFIG_FILE=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,7 +341,7 @@ HOST_NGINX_INTERNAL_DOMAIN=""
 HOST_NGINX_INTERNAL_HOST=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Enable this if container is running a webserver - [yes/no] [internalPort] [yes/no] [yes/no] [listen]
-CONTAINER_WEB_SERVER_ENABLED="yes"
+CONTAINER_WEB_SERVER_ENABLED="no"
 CONTAINER_WEB_SERVER_INT_PORT="80"
 CONTAINER_WEB_SERVER_SSL_ENABLED="no"
 CONTAINER_WEB_SERVER_AUTH_ENABLED="no"
@@ -454,11 +454,11 @@ DOCKER_CUSTOM_CAP=""
 DOCKER_CAP_SYS_TIME="yes"
 DOCKER_CAP_SYS_ADMIN="yes"
 DOCKER_CAP_CHOWN="yes"
-DOCKER_CAP_NET_RAW="no"
-DOCKER_CAP_SYS_NICE="no"
-DOCKER_CAP_NET_ADMIN="no"
-DOCKER_CAP_SYS_MODULE="no"
-DOCKER_CAP_NET_BIND_SERVICE="no"
+DOCKER_CAP_NET_RAW="yes"
+DOCKER_CAP_SYS_NICE="yes"
+DOCKER_CAP_NET_ADMIN="yes"
+DOCKER_CAP_SYS_MODULE="yes"
+DOCKER_CAP_NET_BIND_SERVICE="yes"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define labels - [traefik.enable=true,label=label,otherlabel=label2]
 CONTAINER_LABELS=""
