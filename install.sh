@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202309011635-git
+##@Version           :  202309011722-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.pro
 # @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2023 Jason Hempstead, Casjays Developments
-# @@Created          :  Friday, Sep 01, 2023 16:35 EDT
+# @@Created          :  Friday, Sep 01, 2023 17:22 EDT
 # @@File             :  install.sh
 # @@Description      :  Container installer script for docker
 # @@Changelog        :  New script
@@ -27,7 +27,7 @@
 # shellcheck disable=SC2317
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="docker"
-VERSION="202309011635-git"
+VERSION="202309011722-git"
 REPO_BRANCH="${GIT_REPO_BRANCH:-main}"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
@@ -332,7 +332,7 @@ CONTAINER_PROTOCOL="http"
 CONTAINER_DNS=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup nginx proxy variables - [yes/no] [yes/no] [http] [https] [yes/no]
-HOST_NGINX_ENABLED="yes"
+HOST_NGINX_ENABLED="no"
 HOST_NGINX_SSL_ENABLED="yes"
 HOST_NGINX_HTTP_PORT="80"
 HOST_NGINX_HTTPS_PORT="443"
@@ -500,7 +500,9 @@ DOCKERMGR_ENABLE_INSTALL_SCRIPT="yes"
 # Set custom container enviroment variables - [MYVAR="VAR"]
 __custom_docker_env() {
   cat <<EOF | tee -p | grep -v '^$'
-
+GITHUB_USERNAME="${GITHUB_USERNAME:-$GIT_AUTHOR_NAME}"
+GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-$USER@$HOSTNAME}"
+GITHUB_ACCESS_TOKEN="${GITHUB_ACCESS_TOKEN:-}"
 EOF
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1788,7 +1790,7 @@ if [ -n "$CONTAINER_OPT_PORT_VAR" ] || [ -n "$CONTAINER_ADD_CUSTOM_PORT" ]; then
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # container web server configuration proxy|/location|port
-if [ -n "$CONTAINER_ADD_RANDOM_PORTS" ] || { [ "$CONTAINER_WEB_SERVER_ENABLED" = "yes" ] && [ -n "$CONTAINER_WEB_SERVER_INT_PORT" ]; }; then
+if [ "$CONTAINER_WEB_SERVER_ENABLED" = "yes" ] && { [ -n "$CONTAINER_ADD_RANDOM_PORTS" ] || [ -n "$CONTAINER_WEB_SERVER_INT_PORT" ]; }; then
   internal_path="/${CONTAINER_WEB_SERVER_INT_PATH//\/\//\/}"
   external_path="/${CONTAINER_WEB_SERVER_EXT_PATH//\/\//\/}"
   CONTAINER_WEB_SERVER_LISTEN_ON="${CONTAINER_WEB_SERVER_LISTEN_ON:-}"
